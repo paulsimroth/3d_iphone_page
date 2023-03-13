@@ -15,12 +15,21 @@ import {
 
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { scrollAnimation } from '../lib/scroll-animation';
 
 gsap.registerPlugin(ScrollTrigger);
 
 function WebgiViewer() {
 
     const canvasRef = useRef(null);
+
+    const memoizedScrollAnimation = useCallback(
+        (position, target, onUpdate) => {
+            if (position && target && onUpdate) {
+                scrollAnimation(position, target, onUpdate);
+            };
+        }, []
+    );
 
     const setupViewer = useCallback(async () => {
 
@@ -58,12 +67,19 @@ function WebgiViewer() {
 
         let needsUpdate = true;
 
+        const onUpdate = () =>{
+            needsUpdate = true;
+            viewer.setDirty();
+        };
+
         viewer.addEventListener("preFrame", () => {
             if (needsUpdate) {
                 camera.positionTargetUpdated(true);
                 needsUpdate = false;
             };
         });
+
+        memoizedScrollAnimation(position, target, onUpdate);
 
     }, []);
 
@@ -75,7 +91,7 @@ function WebgiViewer() {
         <div id="webgi-canvas-container">
             <canvas id="webgi-canvas" ref={canvasRef} />
         </div>
-    )
+    );
 };
 
 export default WebgiViewer;

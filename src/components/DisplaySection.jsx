@@ -3,7 +3,7 @@ import React from 'react';
 function DisplaySection({ triggerPreview }) {
 
   const handleScrollToTop = () => {
-    window.scrollTo({ top: 0, left: 0, behaviour: "smooth" });
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
 
   return (
